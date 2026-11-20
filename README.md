@@ -39,6 +39,16 @@ TestNG ──▶ TestNgEventBridge ──▶ TestEventBus ──▶ report.md, l
 
 More detail, with the reasons and the alternatives that were not chosen: [docs/design-patterns.md](docs/design-patterns.md).
 
+## The pages under test
+
+One page object per shop page; each action returns the page it leads to.
+
+| `LoginPage` | `ProductsPage` |
+|---|---|
+| ![Pattern Shop sign-in page](docs/images/login.png) | ![Product list with add-to-cart buttons](docs/images/products.png) |
+| **`CartPage`** | **`OrderCompletePage`** |
+| ![Cart with two products and the total](docs/images/cart.png) | ![Order confirmation with the order number](docs/images/complete.png) |
+
 ## Run it
 
 Start the shop (any of these), then run the tests:
@@ -115,6 +125,8 @@ One job runs the unit and API tests; seven jobs run the UI tests on Selenium Chr
 Selenium Grid, and on Playwright Chromium, Firefox and WebKit, spread over the three data sources. Each job starts the
 shop image from ghcr.io first, so no job depends on a public site. Results and failure screenshots are kept as
 artifacts.
+
+![CI run on main: the unit and API job and all seven UI jobs passed](docs/images/ci-run.png)
 
 ## A real problem the two engines found
 
