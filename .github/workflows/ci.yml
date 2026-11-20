@@ -79,6 +79,14 @@ jobs:
           docker run -d --name grid --network host --shm-size=2g selenium/standalone-chrome:4.52.0-20261101
           for i in $(seq 1 60); do curl -s localhost:4444/status | grep -q '"ready": *true' && exit 0; sleep 2; done
           docker logs grid; exit 1
+      # Edge's first start on a fresh runner (profile, components) made the first test's page load hang, even with
+      # --no-first-run; one headless start here takes that cost outside the tests
+      - name: Warm up Edge
+        if: ${{ matrix.browser == 'edge' }}
+        run: |
+          edge=$(command -v microsoft-edge-stable || command -v microsoft-edge)
+          "$edge" --version
+          time timeout 120 "$edge" --headless=new --no-sandbox --disable-dev-shm-usage --no-first-run             --no-default-browser-check --dump-dom about:blank > /dev/null || echo "Warm-up did not finish; the tests will show it"
       - name: Install the Playwright browser and its system libraries
         if: ${{ matrix.engine == 'playwright' }}
         run: ./mvnw -B -q test-compile org.codehaus.mojo:exec-maven-plugin:3.7.0:java -Dexec.classpathScope=test -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps ${{ matrix.browser }}"
