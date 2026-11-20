@@ -1,0 +1,6 @@
+[
+  {"id": "P-100", "name": "Backpack", "priceCents": 2999},
+  {"id": "P-200", "name": "Bike Light", "priceCents": 999},
+  {"id": "P-300", "name": "Bolt T-Shirt", "priceCents": 1599},
+  {"id": "P-400", "name": "Fleece Jacket", "priceCents": 4999}
+]

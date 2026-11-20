@@ -1,0 +1,5 @@
+# Subscribed to the global TestEventBus at the start of the run (one class per line)
+com.niranjankagri.patterns.events.LogListener
+com.niranjankagri.patterns.events.ReportListener
+com.niranjankagri.patterns.events.MetricsListener
+com.niranjankagri.patterns.events.ScreenshotListener

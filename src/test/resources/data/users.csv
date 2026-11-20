@@ -1,0 +1,4 @@
+username,password,state
+standard_user,secret_sauce,active
+locked_user,secret_sauce,locked
+visual_user,secret_sauce,active
