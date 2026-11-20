@@ -79,9 +79,25 @@ jobs:
           docker run -d --name grid --network host --shm-size=2g selenium/standalone-chrome:4.52.0-20261101
           for i in $(seq 1 60); do curl -s localhost:4444/status | grep -q '"ready": *true' && exit 0; sleep 2; done
           docker logs grid; exit 1
+      # Edge's first start on a fresh runner (profile, components) made the first test's page load hang, even with
+      # --no-first-run; one headless start here takes that cost outside the tests
+      - name: Warm up Edge
+        if: ${{ matrix.browser == 'edge' }}
+        run: |
+          edge=$(command -v microsoft-edge-stable || command -v microsoft-edge)
+          "$edge" --version
+          time timeout 120 "$edge" --headless=new --no-sandbox --disable-dev-shm-usage --no-first-run             --no-default-browser-check --dump-dom about:blank > /dev/null || echo "Warm-up did not finish; the tests will show it"
+      # Usually under a minute; a slow Ubuntu package mirror twice stalled it until the whole job was cancelled after
+      # 15 minutes. So: 5 minutes per attempt and one more attempt (the install only; the tests are never retried)
       - name: Install the Playwright browser and its system libraries
         if: ${{ matrix.engine == 'playwright' }}
-        run: ./mvnw -B -q test-compile org.codehaus.mojo:exec-maven-plugin:3.7.0:java -Dexec.classpathScope=test -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps ${{ matrix.browser }}"
+        run: |
+          ./mvnw -B -q test-compile
+          for attempt in 1 2; do
+            timeout 300 ./mvnw -B -q org.codehaus.mojo:exec-maven-plugin:3.7.0:java -Dexec.classpathScope=test               -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps ${{ matrix.browser }}" && exit 0
+            echo "::warning::Browser install attempt $attempt did not finish within 5 minutes"
+          done
+          exit 1
       - name: UI tests
         run: ./mvnw -B verify -Dsuite=ui -Dengine=${{ matrix.engine }} -Dbrowser=${{ matrix.browser }} -Dremote=${{ matrix.remote }} -Ddata.source=${{ matrix.data }}
       - name: Test report in the job summary
