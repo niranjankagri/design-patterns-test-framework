@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Design patterns in a test automation framework: Page Object, Factory, Strategy, Adapter and Observer.
+  The same UI tests run on Selenium WebDriver and on Playwright for Java through one Browser interface.
+  The shop under test starts inside the test run (JDK HTTP server), so no public demo site is needed.
+
+  ./mvnw verify                                         every test, Selenium + local Chrome (the defaults)
+  ./mvnw verify -Dengine=playwright -Dbrowser=webkit    the same tests on Playwright WebKit
+  ./mvnw verify -Dsuite=core                            unit and API tests only (no browser)
+  See README.md for every option.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.niranjankagri</groupId>
+    <artifactId>design-patterns-test-framework</artifactId>
+    <version>1.0.0</version>
+    <name>design-patterns-test-framework</name>
+    <description>Page Object, Factory, Strategy, Adapter and Observer in one Java test framework that runs on Selenium and Playwright</description>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <selenium.version>4.53.0</selenium.version>
+        <playwright.version>1.65.1</playwright.version>
+        <jackson.version>2.23.0</jackson.version>
+        <testng.version>7.12.0</testng.version>
+        <assertj.version>3.27.7</assertj.version>
+        <slf4j.version>2.0.20</slf4j.version>
+        <!-- Which TestNG suite runs: all (default), core (unit + API, no browser) or ui -->
+        <suite>all</suite>
+    </properties>
+
+    <dependencies>
+        <!-- The two browser engines behind the Browser interface (Adapter) -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
+        </dependency>
+        <!-- JSON for the JSON and API test-data strategies and the REST client adapter -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- TestNG is a main dependency: the TestNG-to-event bridge (Observer) lives in the framework code -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all,-processing</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.6</version>
+                <!-- 3.5.x on purpose: from 3.6.0 Surefire runs TestNG on the JUnit Platform and ignores suite XML files -->
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/suites/${suite}.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <!-- One line per log record from the LogListener: "INFO: PASSED TC-101 ..." -->
+                        <java.util.logging.SimpleFormatter.format>%4$s: %5$s%6$s%n</java.util.logging.SimpleFormatter.format>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

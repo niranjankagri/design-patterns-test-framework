@@ -1,0 +1,23 @@
+# Keeps Selenium, Playwright, the test libraries and the CI actions current. Once a month, minor and patch updates are
+# grouped into one pull request per ecosystem; a major version comes as its own pull request and is reviewed first.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: monthly
+    groups:
+      maven-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Surefire 3.6 runs TestNG on the JUnit Platform and drops suiteXmlFiles, which select core/ui/all here
+      - dependency-name: org.apache.maven.plugins:maven-surefire-plugin
+        versions: [">= 3.6.0"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    groups:
+      github-actions-minor-patch:
+        update-types: [minor, patch]

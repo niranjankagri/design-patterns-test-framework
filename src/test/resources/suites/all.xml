@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Every test: unit, API (catalog adapters) and UI (on the configured engine). Select with ./mvnw verify -Dsuite=all -->
+<suite name="design-patterns-all" verbose="1">
+    <listeners>
+        <!-- Observer: TestNG callbacks become test events for the report, log, metrics and screenshot listeners -->
+        <listener class-name="com.niranjankagri.patterns.events.TestNgEventBridge"/>
+    </listeners>
+    <test name="all">
+        <packages>
+            <package name="com.niranjankagri.patterns.unit"/>
+            <package name="com.niranjankagri.patterns.browser"/>
+            <package name="com.niranjankagri.patterns.clients"/>
+            <package name="com.niranjankagri.patterns.api"/>
+            <package name="com.niranjankagri.patterns.ui"/>
+        </packages>
+    </test>
+</suite>

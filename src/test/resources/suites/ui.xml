@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- UI tests only, on the configured engine and browser. Select with ./mvnw verify -Dsuite=ui -->
+<suite name="design-patterns-ui" verbose="1">
+    <listeners>
+        <!-- Observer: TestNG callbacks become test events for the report, log, metrics and screenshot listeners -->
+        <listener class-name="com.niranjankagri.patterns.events.TestNgEventBridge"/>
+    </listeners>
+    <test name="ui">
+        <packages>
+            <package name="com.niranjankagri.patterns.ui"/>
+        </packages>
+    </test>
+</suite>
