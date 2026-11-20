@@ -41,7 +41,7 @@ public class BrowserFactoryTest {
         assertThat(BrowserFactory.seleniumOptions(config(Engine.SELENIUM, "edge", true)))
                 .isInstanceOf(EdgeOptions.class)
                 .satisfies(o -> assertThat(o.asMap().toString()).contains("--headless=new", "--no-sandbox",
-                        "--disable-dev-shm-usage", "profile.password_manager_leak_detection=false"));
+                        "--disable-dev-shm-usage", "--no-first-run", "profile.password_manager_leak_detection=false"));
         assertThat(BrowserFactory.seleniumOptions(config(Engine.SELENIUM, "firefox", false)))
                 .isInstanceOf(FirefoxOptions.class)
                 .satisfies(o -> assertThat(o.asMap().toString()).contains("-headless"));

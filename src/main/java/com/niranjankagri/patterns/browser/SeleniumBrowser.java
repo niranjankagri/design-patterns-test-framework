@@ -20,6 +20,9 @@ import java.util.List;
  */
 public final class SeleniumBrowser implements Browser {
 
+    /** How long a page may take to load. */
+    static final Duration PAGE_LOAD_TIMEOUT = Duration.ofSeconds(30);
+
     private final WebDriver driver;
     private final URI appUrl;
     private final WebDriverWait wait;
@@ -30,6 +33,8 @@ public final class SeleniumBrowser implements Browser {
         this.driver = driver;
         this.appUrl = appUrl;
         this.wait = new WebDriverWait(driver, timeout);
+        // A page that does not load fails after 30 s with a clear message, not after the client's 3-minute read timeout
+        driver.manage().timeouts().pageLoadTimeout(PAGE_LOAD_TIMEOUT);
         this.timeout = timeout;
         this.name = name;
     }

@@ -105,8 +105,10 @@ public final class BrowserFactory {
                     o.addArguments("--headless=new");
                 }
                 // Edge is Chromium: on a Linux CI runner it needs the same flags as Chrome, or it exits at start
-                // ("session not created: Chrome instance exited")
-                o.addArguments("--window-size=1280,900", "--no-sandbox", "--disable-dev-shm-usage");
+                // ("session not created: Chrome instance exited"). Its first-run setup on a fresh runner made the very
+                // first page load hang for minutes (CI, 20 Nov 2026), hence --no-first-run.
+                o.addArguments("--window-size=1280,900", "--no-sandbox", "--disable-dev-shm-usage", "--no-first-run",
+                        "--no-default-browser-check");
                 o.setExperimentalOption("prefs", NO_PASSWORD_MANAGER);
                 yield o;
             }
@@ -116,7 +118,8 @@ public final class BrowserFactory {
                     o.addArguments("--headless=new");
                 }
                 // --no-sandbox and /dev/shm: needed in containers and on CI runners
-                o.addArguments("--window-size=1280,900", "--no-sandbox", "--disable-dev-shm-usage");
+                o.addArguments("--window-size=1280,900", "--no-sandbox", "--disable-dev-shm-usage", "--no-first-run",
+                        "--no-default-browser-check");
                 o.setExperimentalOption("prefs", NO_PASSWORD_MANAGER);
                 yield o;
             }
