@@ -3,6 +3,7 @@ package com.niranjankagri.patterns.browser;
 import com.niranjankagri.patterns.config.TestConfig;
 import com.niranjankagri.patterns.config.TestConfig.Engine;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.Test;
 
@@ -37,6 +38,10 @@ public class BrowserFactoryTest {
                 .isInstanceOf(ChromeOptions.class)
                 .satisfies(o -> assertThat(o.asMap().toString()).contains("--headless=new", "--window-size=1280,900",
                         "profile.password_manager_leak_detection=false"));
+        assertThat(BrowserFactory.seleniumOptions(config(Engine.SELENIUM, "edge", true)))
+                .isInstanceOf(EdgeOptions.class)
+                .satisfies(o -> assertThat(o.asMap().toString()).contains("--headless=new", "--no-sandbox",
+                        "--disable-dev-shm-usage", "profile.password_manager_leak_detection=false"));
         assertThat(BrowserFactory.seleniumOptions(config(Engine.SELENIUM, "firefox", false)))
                 .isInstanceOf(FirefoxOptions.class)
                 .satisfies(o -> assertThat(o.asMap().toString()).contains("-headless"));

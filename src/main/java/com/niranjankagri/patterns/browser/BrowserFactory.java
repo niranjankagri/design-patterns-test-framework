@@ -104,7 +104,9 @@ public final class BrowserFactory {
                 if (config.headless()) {
                     o.addArguments("--headless=new");
                 }
-                o.addArguments("--window-size=1280,900");
+                // Edge is Chromium: on a Linux CI runner it needs the same flags as Chrome, or it exits at start
+                // ("session not created: Chrome instance exited")
+                o.addArguments("--window-size=1280,900", "--no-sandbox", "--disable-dev-shm-usage");
                 o.setExperimentalOption("prefs", NO_PASSWORD_MANAGER);
                 yield o;
             }
