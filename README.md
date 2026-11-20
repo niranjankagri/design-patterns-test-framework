@@ -5,7 +5,7 @@
 A Java test framework built to show five design patterns doing real work: **Page Object, Factory, Strategy, Adapter
 and Observer**. The same UI tests run on **Selenium WebDriver** and on **Playwright for Java**, on seven browser
 setups, against the [Pattern Shop](https://github.com/niranjankagri/pattern-shop-demo-app), a small demo shop that
-CI starts as a Docker image next to the tests.
+CI starts as a Docker image next to the tests (also hosted: https://pattern-shop.onrender.com).
 
 | | |
 |---|---|
@@ -46,6 +46,8 @@ Start the shop (any of these), then run the tests:
 ```bash
 docker run -d -p 8080:8080 ghcr.io/niranjankagri/pattern-shop-demo-app:latest   # the image CI uses
 # or: clone pattern-shop-demo-app and run ./mvnw package && java -jar target/pattern-shop.jar
+# or, without Docker, the hosted demo (it may need a minute to wake up):
+#   ./mvnw verify -Dapp.url=https://pattern-shop.onrender.com
 
 ./mvnw verify                                             # all 37 tests, Selenium + Chrome, JSON data
 ./mvnw verify -Dengine=playwright -Dbrowser=webkit        # the same UI tests on Playwright WebKit
