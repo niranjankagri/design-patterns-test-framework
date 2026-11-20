@@ -88,14 +88,19 @@ jobs:
           "$edge" --version
           time timeout 120 "$edge" --headless=new --no-sandbox --disable-dev-shm-usage --no-first-run             --no-default-browser-check --dump-dom about:blank > /dev/null || echo "Warm-up did not finish; the tests will show it"
       # Usually under a minute; a slow Ubuntu package mirror twice stalled it until the whole job was cancelled after
-      # 15 minutes. So: 5 minutes per attempt and one more attempt (the install only; the tests are never retried)
+      # 15 minutes. So: 5 minutes per attempt and one more attempt (the install only; the tests are never retried).
+      # timeout stops Maven but not the apt-get it started as root, which keeps the package lock and made the second
+      # attempt fail at once; so stop what is left, wait for dpkg to finish and repair before trying again
       - name: Install the Playwright browser and its system libraries
         if: ${{ matrix.engine == 'playwright' }}
         run: |
           ./mvnw -B -q test-compile
           for attempt in 1 2; do
             timeout 300 ./mvnw -B -q org.codehaus.mojo:exec-maven-plugin:3.7.0:java -Dexec.classpathScope=test               -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps ${{ matrix.browser }}" && exit 0
-            echo "::warning::Browser install attempt $attempt did not finish within 5 minutes"
+            echo "::warning::Browser install attempt $attempt failed or did not finish within 5 minutes"
+            sudo pkill -x apt-get || true
+            for i in $(seq 1 60); do pgrep -x 'apt-get|dpkg' > /dev/null || break; sleep 2; done
+            sudo dpkg --configure -a
           done
           exit 1
       - name: UI tests
