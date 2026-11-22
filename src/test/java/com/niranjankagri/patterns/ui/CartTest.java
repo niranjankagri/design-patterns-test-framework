@@ -3,6 +3,7 @@ package com.niranjankagri.patterns.ui;
 import com.niranjankagri.patterns.model.Product;
 import com.niranjankagri.patterns.model.User;
 import com.niranjankagri.patterns.pages.CartPage;
+import com.niranjankagri.patterns.pages.CheckoutOverviewPage;
 import com.niranjankagri.patterns.pages.LoginPage;
 import com.niranjankagri.patterns.pages.OrderCompletePage;
 import com.niranjankagri.patterns.pages.ProductsPage;
@@ -42,10 +43,20 @@ public class CartTest extends BaseUiTest {
         assertThat(cart.total()).isEqualTo(kept.displayPrice());
     }
 
-    @Test(description = "TC-303 checkout confirms an order number and empties the cart")
+    @Test(description = "TC-303 checkout: buyer, overview with 8 % tax, then an order number and an empty cart")
     public void checkout() {
-        OrderCompletePage done = products.add(product(0).id()).openCart().checkout();
+        Product bought = product(0);
+        CheckoutOverviewPage overview = products.add(bought.id()).openCart().checkout()
+                .enter("Ada", "Lovelace", "10115").continueToOverview();
 
+        // tax: 8 % of the item total, rounded to the cent (the shop's rule), computed here from the test data
+        int tax = (bought.priceCents() * 8 + 50) / 100;
+        assertThat(overview.itemNames()).containsExactly(bought.name());
+        assertThat(overview.subtotal()).isEqualTo(bought.displayPrice());
+        assertThat(overview.tax()).isEqualTo(new Product("", "", tax).displayPrice());
+        assertThat(overview.total()).isEqualTo(new Product("", "", bought.priceCents() + tax).displayPrice());
+
+        OrderCompletePage done = overview.finish();
         assertThat(done.title()).isEqualTo("Thank you for your order");
         assertThat(done.orderNumber()).matches("ORD-\\d{4}");
         assertThat(done.backToProducts().cartCount()).isZero();

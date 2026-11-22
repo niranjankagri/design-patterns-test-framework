@@ -11,7 +11,7 @@ CI starts as a Docker image next to the tests (also hosted: https://pattern-shop
 |---|---|
 | Language | Java 21, Maven (wrapper included) |
 | Engines | Selenium 4.53 (Chrome, Firefox, Edge, Selenium Grid) and Playwright 1.65 (Chromium, Firefox, WebKit) |
-| Tests | TestNG 7.12, AssertJ: 37 tests (26 unit and API, 11 UI) |
+| Tests | TestNG 7.12, AssertJ: 39 tests (26 unit and API, 13 UI) |
 | Application | [Pattern Shop](https://github.com/niranjankagri/pattern-shop-demo-app): pages, REST, SOAP-style XML and a legacy text API |
 
 ## The five patterns
@@ -46,8 +46,10 @@ One page object per shop page; each action returns the page it leads to.
 | `LoginPage` | `ProductsPage` |
 |---|---|
 | ![Pattern Shop sign-in page](docs/images/login.png) | ![Product list with add-to-cart buttons](docs/images/products.png) |
-| **`CartPage`** | **`OrderCompletePage`** |
-| ![Cart with two products and the total](docs/images/cart.png) | ![Order confirmation with the order number](docs/images/complete.png) |
+| **`CartPage`** | **`CheckoutInfoPage`** |
+| ![Cart with two products and the total](docs/images/cart.png) | ![Checkout form showing "Last name is required."](docs/images/checkout-info.png) |
+| **`CheckoutOverviewPage`** | **`OrderCompletePage`** |
+| ![Overview with item total, tax and total](docs/images/overview.png) | ![Order confirmation with the order number](docs/images/complete.png) |
 
 ## Run it
 
@@ -59,7 +61,7 @@ docker run -d -p 8080:8080 ghcr.io/niranjankagri/pattern-shop-demo-app:latest   
 # or, without Docker, the hosted demo (it may need a minute to wake up):
 #   ./mvnw verify -Dapp.url=https://pattern-shop.onrender.com
 
-./mvnw verify                                             # all 37 tests, Selenium + Chrome, JSON data
+./mvnw verify                                             # all 39 tests, Selenium + Chrome, JSON data
 ./mvnw verify -Dengine=playwright -Dbrowser=webkit        # the same UI tests on Playwright WebKit
 ./mvnw verify -Dsuite=ui -Dbrowser=firefox -Ddata.source=csv
 ./mvnw verify -Dsuite=core                                # unit and API tests only, no browser
@@ -111,7 +113,7 @@ Every run writes, through the Observer listeners:
 |---|---|---|
 | TC-101..104 | sign-in outcome per user from the data source, wrong password, empty fields, sign-out | each engine/browser |
 | TC-201..202 | catalog names and prices, cart counter | each engine/browser |
-| TC-301..303 | cart items and total, remove, checkout | each engine/browser |
+| TC-301..303 | cart items and total, remove, checkout (buyer, overview with 8 % tax, order number) | each engine/browser |
 | TC-401..404 | the same catalog checks through the REST, SOAP and legacy adapters | core |
 | TC-501..503 | the three data sources return the same data; selection by name | core |
 | TC-601..604 | factory validation and browser options; configuration overrides | core |

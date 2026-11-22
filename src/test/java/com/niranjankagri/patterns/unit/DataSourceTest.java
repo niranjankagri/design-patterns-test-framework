@@ -21,10 +21,10 @@ public class DataSourceTest {
     public void jsonAndCsvAgree() {
         TestDataSource json = new JsonTestDataSource();
         TestDataSource csv = new CsvTestDataSource();
-        assertThat(csv.users()).isEqualTo(json.users()).hasSize(3);
+        assertThat(csv.users()).isEqualTo(json.users()).hasSize(5);
         assertThat(csv.products()).isEqualTo(json.products()).hasSize(4);
         assertThat(json.users()).filteredOn(User::canSignIn).extracting(User::username)
-                .containsExactly("standard_user", "visual_user");
+                .containsExactly("standard_user", "visual_user", "problem_user", "slow_user");
     }
 
     @Test(description = "TC-502 the configured name picks the strategy, and an unknown name is refused")
