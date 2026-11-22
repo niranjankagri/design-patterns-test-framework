@@ -11,6 +11,8 @@ extend it. Class names link to the source.
 **Where:** [`LoginPage`](../src/main/java/com/niranjankagri/patterns/pages/LoginPage.java),
 [`ProductsPage`](../src/main/java/com/niranjankagri/patterns/pages/ProductsPage.java),
 [`CartPage`](../src/main/java/com/niranjankagri/patterns/pages/CartPage.java),
+[`CheckoutInfoPage`](../src/main/java/com/niranjankagri/patterns/pages/CheckoutInfoPage.java),
+[`CheckoutOverviewPage`](../src/main/java/com/niranjankagri/patterns/pages/CheckoutOverviewPage.java),
 [`OrderCompletePage`](../src/main/java/com/niranjankagri/patterns/pages/OrderCompletePage.java).
 
 **Rules followed here:**

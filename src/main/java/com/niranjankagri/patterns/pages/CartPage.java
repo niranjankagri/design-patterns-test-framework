@@ -31,10 +31,10 @@ public final class CartPage {
         return new CartPage(browser);
     }
 
-    /** Places the order. */
-    public OrderCompletePage checkout() {
+    /** Starts the checkout: the form for first name, last name and postal code. */
+    public CheckoutInfoPage checkout() {
         browser.clickAndWaitForPage("checkout");
-        return new OrderCompletePage(browser);
+        return new CheckoutInfoPage(browser);
     }
 
     /** Back to the product list. */
